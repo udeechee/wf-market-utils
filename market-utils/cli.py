@@ -1,7 +1,7 @@
 import argparse
 import logging
 
-from impl import margin_check_impl, init_impl_logger, cache_init_impl
+from impl import margin_check_impl, init_impl_logger, cache_init_impl, get_recent_orders
 
 
 #
@@ -126,6 +126,7 @@ def init_cache_cli(args: argparse.Namespace):
 
 def refresh_cache_cli(args: argparse.Namespace):
     args_dict = vars(args)
+    get_recent_orders()
 
 def main():
 

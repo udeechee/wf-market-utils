@@ -183,5 +183,6 @@ def cache_init_impl():
 
 
 def get_recent_orders():
-    wfm.request_recent_orders()
+    for i in range(0,10):
+        print(wfm.request_recent_orders())
 
