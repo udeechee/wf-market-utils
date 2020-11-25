@@ -28,6 +28,11 @@ LAST_SELL_ID = "last_sell_id"
 INPUT_FILE = "market-utils/wfm.cache"
 PERCENT_THRESHOLD = 0.10
 
+MEM_CACHE = {
+    LAST_BUY_ID: "0",
+    LAST_SELL_ID: "0"
+}
+
 def parse_input_cache(input_file:str):
     recent_order_info = {}
     item_price_dict = {}
@@ -61,11 +66,14 @@ try:
 
     while True:
         newest_order_results = impl.find_newest_orders(item_price_dict,
-                                       previous_buy_id=recent_order_info[LAST_BUY_ID],
-                                       previous_sell_id=recent_order_info[LAST_SELL_ID])
+                                       previous_buy_id=MEM_CACHE[LAST_BUY_ID],
+                                       previous_sell_id=MEM_CACHE[LAST_SELL_ID])
 
         buy_results = newest_order_results["buy_results"]
         sell_results = newest_order_results["sell_results"]
+
+        MEM_CACHE[LAST_BUY_ID] = newest_order_results[LAST_BUY_ID]
+        MEM_CACHE[LAST_SELL_ID] = newest_order_results[LAST_SELL_ID]
 
         for item, info_list in buy_results.items():
             # avg/current price
