@@ -209,7 +209,7 @@ def find_newest_orders(wfmu_cache:dict, previous_buy_id:str, previous_sell_id:st
 
         order_info = {"platinum": plat, "user": user}
 
-        if buy_results[url_name]:
+        if url_name in buy_results.keys():
             buy_results[url_name].append(order_info)
         else:
             buy_results[url_name] = [order_info]
@@ -224,7 +224,7 @@ def find_newest_orders(wfmu_cache:dict, previous_buy_id:str, previous_sell_id:st
 
         order_info = {"platinum": plat, "user": user}
 
-        if sell_results[url_name]:
+        if url_name in sell_results.keys():
             sell_results[url_name].append(order_info)
         else:
             sell_results[url_name] = [order_info]

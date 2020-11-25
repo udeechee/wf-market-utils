@@ -19,6 +19,8 @@ BLUEPRINTS = "blueprints"
 MODS = "mods"
 AVG_PLAT = "avg_plat"
 
+PLATINUM = "platinum"
+
 RECENT_ORDERS = "recent_orders"
 LAST_BUY_ID = "last_buy_id"
 LAST_SELL_ID = "last_sell_id"
@@ -58,35 +60,55 @@ try:
     recent_order_info = parsed_cached[RECENT_ORDERS]
 
     while True:
-        impl.find_newest_orders(item_price_dict,
+        newest_order_results = impl.find_newest_orders(item_price_dict,
                                        previous_buy_id=recent_order_info[LAST_BUY_ID],
                                        previous_sell_id=recent_order_info[LAST_SELL_ID])
 
-        for item, price in item_price_dict.items():
-            margin_check_dict = cli.margin_check_impl(item, False, False, False)
+        buy_results = newest_order_results["buy_results"]
+        sell_results = newest_order_results["sell_results"]
 
-            sell_names:list = margin_check_dict["Sellers"][0]
-            buy_names:list = margin_check_dict["Buyers"][0]
+        for item, info_list in buy_results.items():
+            # avg/current price
+            price = item_price_dict[item]
 
-            updated_sell:float = margin_check_dict["Sellers"][1]
-            updated_buy:float = margin_check_dict["Buyers"][1]
+            names: list = []
 
-            sell_perc = round(percent_diff(price, updated_sell), 4)
-            buy_perc = round(percent_diff(price, updated_buy), 4)
+            for info in info_list:
+                recent_price = info[PLATINUM]
+                user = info["user"]
+                perc_diff = round(percent_diff(price, recent_price), 4)
 
-            output_string:str = ""
+                output_string:str = ""
+                if perc_diff < -PERCENT_THRESHOLD:
+                    output_string += "BUYER UP " + str(perc_diff*100) + "% - " + str(user) + ": " + str(recent_price) + "\n"
 
-            if sell_perc > PERCENT_THRESHOLD:
-                output_string += "SELLER DOWN " + str(sell_perc*100) + "% - " + str(sell_names) + ": " + str(updated_sell) + "\n"
+                if output_string:
+                    output_string = item + " - " + str(price) + "\n" + output_string
+                    print(output_string)
 
-            if buy_perc < -PERCENT_THRESHOLD:
-                output_string += "BUYER UP " + str(buy_perc*100) + "% - " + str(buy_names) + ": " + str(updated_buy) + "\n"
+        for item, info_list in sell_results.items():
+            # avg/current price
+            price = item_price_dict[item]
 
-            if output_string:
-                output_string = item + " - " + str(price) + "\n" + output_string
-                print(output_string)
+            names: list = []
 
-        time.sleep(60.0)
+            for info in info_list:
+                recent_price = info[PLATINUM]
+                user = info["user"]
+                perc_diff = round(percent_diff(price, recent_price), 4)
+
+                output_string: str = ""
+                if perc_diff > PERCENT_THRESHOLD:
+                    output_string += "SELLER DOWN " + str(perc_diff * 100) + "% - " + str(user) + ": " + str(
+                        recent_price) + "\n"
+
+                if output_string:
+                    output_string = item + " - " + str(price) + "\n" + output_string
+                    print(output_string)
+
+        time.sleep(10.0)
+
+#          Gotta fix how the last_id works, so its updated at least in memory
 
 except KeyboardInterrupt:
     print("Exiting")
