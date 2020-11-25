@@ -1,7 +1,7 @@
 import argparse
 import logging
 
-from impl import margin_check_impl, init_impl_logger, cache_init_impl, get_recent_orders
+from impl import margin_check_impl, init_impl_logger, cache_init_impl, find_newest_orders
 
 
 #

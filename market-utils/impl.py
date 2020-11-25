@@ -186,3 +186,62 @@ def get_recent_orders():
     for i in range(0,10):
         print(wfm.request_recent_orders())
 
+
+def find_newest_orders(wfmu_cache:dict, previous_buy_id:str, previous_sell_id:str):
+
+    # Example layout of buy_results dict:
+    # { "mesa_prime_set": [{"platinum": 50, "user": "bluoo"},{"platinum": 90, "user": "jakfk"}], "other_item": [...] }
+    buy_results = {}
+    sell_results = {}
+
+    payload = wfm.request_recent_orders()["payload"]
+
+    newest_buy_orders = filter_recent_orders(previous_buy_id, payload["buy_orders"])
+    newest_sell_orders = filter_recent_orders(previous_sell_id, payload["sell_orders"])
+
+    for buy_order in newest_buy_orders:
+        url_name = buy_order["item"]["url_name"]
+        if url_name not in wfmu_cache.keys():
+            continue
+
+        plat = buy_order["platinum"]
+        user = buy_order["user"]["ingame_name"]
+
+        order_info = {"platinum": plat, "user": user}
+
+        if buy_results[url_name]:
+            buy_results[url_name].append(order_info)
+        else:
+            buy_results[url_name] = [order_info]
+
+    for sell_order in newest_sell_orders:
+        url_name = sell_order["item"]["url_name"]
+        if url_name not in wfmu_cache.keys():
+            continue
+
+        plat = sell_order["platinum"]
+        user = sell_order["user"]["ingame_name"]
+
+        order_info = {"platinum": plat, "user": user}
+
+        if sell_results[url_name]:
+            sell_results[url_name].append(order_info)
+        else:
+            sell_results[url_name] = [order_info]
+
+    return {"buy_results": buy_results, "sell_results": sell_results}
+
+
+def filter_recent_orders(last_known_id: str, order_list:list):
+    if last_known_id == "0":
+        return order_list
+
+    i = 0
+    for order in order_list:
+        if order["id"] == last_known_id:
+            return order_list[:i]
+        i += 1
+    return order_list
+
+
+
