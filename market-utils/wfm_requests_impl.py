@@ -6,6 +6,7 @@ WARFRAME_MARKET_ROOT = "https://api.warframe.market/v1/"
 ITEMS_REQUEST = "items"
 STATISTICS_REQUEST = "statistics"
 ORDERS_REQUEST = "orders"
+MOST_RECENT = "most_recent"
 
 # def start_session():
 # Start session
@@ -16,6 +17,8 @@ session.headers.update({"Platform": "pc", "Language": "en"})
 def build_url_request_items():
     return WARFRAME_MARKET_ROOT + ITEMS_REQUEST
 
+def build_url_request_recent_orders():
+    return WARFRAME_MARKET_ROOT + MOST_RECENT
 
 def build_url_request_item(url_name: str):
     return build_url_request_items() + "/" + url_name
@@ -44,6 +47,9 @@ def request_item_orders(url_name: str):
 def request_item_statistics(url_name: str):
     return serve_request(build_url_request_item_statistics(url_name))
 
+
+def request_recent_orders():
+    return serve_request(build_url_request_recent_orders())
 
 # Keeps requests per second less than 3
 def serve_request(uri: str):

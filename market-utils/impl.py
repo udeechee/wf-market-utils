@@ -181,3 +181,7 @@ def cache_init_impl():
     except IOError:
         print("Failed to write output to external file '" + output_file + "'")
 
+
+def get_recent_orders():
+    wfm.request_recent_orders()
+
