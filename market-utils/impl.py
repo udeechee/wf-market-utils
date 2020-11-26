@@ -202,8 +202,17 @@ def find_newest_orders(wfmu_cache:dict, previous_buy_id:str, previous_sell_id:st
     new_last_buy_id:str
     new_last_sell_id:str
 
+    if newest_buy_orders:
+        new_last_buy_id = newest_buy_orders[0]["id"]
+    else:
+        new_last_buy_id = previous_buy_id
+
+    if newest_sell_orders:
+        new_last_sell_id = newest_sell_orders[0]["id"]
+    else:
+        new_last_sell_id = previous_sell_id
+
     for buy_order in newest_buy_orders:
-        new_last_buy_id = buy_order["id"]
         url_name = buy_order["item"]["url_name"]
         if url_name not in wfmu_cache.keys():
             continue
@@ -219,7 +228,6 @@ def find_newest_orders(wfmu_cache:dict, previous_buy_id:str, previous_sell_id:st
             buy_results[url_name] = [order_info]
 
     for sell_order in newest_sell_orders:
-        new_last_sell_id = sell_order["id"]
         url_name = sell_order["item"]["url_name"]
         if url_name not in wfmu_cache.keys():
             continue

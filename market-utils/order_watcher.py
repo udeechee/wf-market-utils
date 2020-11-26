@@ -114,7 +114,7 @@ try:
                     output_string = item + " - " + str(price) + "\n" + output_string
                     print(output_string)
 
-        time.sleep(10.0)
+        time.sleep(5)
 
 #          Gotta fix how the last_id works, so its updated at least in memory
 
