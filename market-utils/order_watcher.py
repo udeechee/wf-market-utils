@@ -10,6 +10,8 @@
 
 # Assuming wfm.cache is already populated?
 import json
+from datetime import datetime
+
 import wfm_requests_impl as wfm
 import cli
 import impl
@@ -88,7 +90,8 @@ try:
 
                 output_string:str = ""
                 if perc_diff < -PERCENT_THRESHOLD:
-                    output_string += "BUYER UP " + str(perc_diff*100) + "% - " + str(user) + ": " + str(recent_price) + "\n"
+                    output_string += "BUYER UP " + str(perc_diff * 100) + "% - " + str(user) + ": " + str(
+                        recent_price) + " --- " + datetime.now().strftime("%H:%M:%S") + "\n"
 
                 if output_string:
                     output_string = item + " - " + str(price) + "\n" + output_string
@@ -108,7 +111,7 @@ try:
                 output_string: str = ""
                 if perc_diff > PERCENT_THRESHOLD:
                     output_string += "SELLER DOWN " + str(perc_diff * 100) + "% - " + str(user) + ": " + str(
-                        recent_price) + "\n"
+                        recent_price) + " --- " + datetime.now().strftime("%H:%M:%S") + "\n"
 
                 if output_string:
                     output_string = item + " - " + str(price) + "\n" + output_string
